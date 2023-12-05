@@ -4,3 +4,11 @@ download kafka locally. Follow quickstart section. Each command **_run in separa
 3) #### Start the app
 4) #### In order to consume from 'amigoscode' Topic via terminal: `.\bin\windows\kafka-console-consumer.bat --topic amigoscode --from-beginning --bootstrap-server localhost:9092`
 
+### Via Rest Client
+###
+POST http://localhost:8080/api/v1/messages
+Content-Type: application/json
+
+`{
+"message": "Api With Kafka"
+}`
