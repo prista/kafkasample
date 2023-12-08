@@ -3,7 +3,6 @@ package com.drmcode.kafkaexample.config;
 import com.drmcode.kafkaexample.Message;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +11,8 @@ import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
+import org.springframework.kafka.support.converter.JsonMessageConverter;
+import org.springframework.kafka.support.converter.RecordMessageConverter;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.HashMap;
@@ -31,10 +32,13 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConsumerFactory<String, Message> consumerFactory() {
+        var jsonDeserializer = new JsonDeserializer<>(Message.class);
+        jsonDeserializer.addTrustedPackages("com.drmcode");
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfig(),
                 new StringDeserializer(),
-                new JsonDeserializer<>());
+                jsonDeserializer
+        );
     }
 
     @Bean
@@ -46,4 +50,10 @@ public class KafkaConsumerConfig {
         factory.setConsumerFactory(consumerFactory);
         return factory;
     }
+
+    @Bean
+    public RecordMessageConverter converter() {
+        return new JsonMessageConverter();
+    }
+
 }
